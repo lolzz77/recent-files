@@ -65,10 +65,8 @@ export class RecentFilesProvider extends vscode.Disposable implements vscode.Tre
 	}
 
   // if exceed maximum size, delete the last element from array
-  if(this.model.length > 20)
-  {
+  while(this.model.length > 50)
     this.model.pop();
-  }
 
   // udpate array to the explorer id specified in /workspace/recent-files/package.json
   // this only takes effect after you reload the window twice (the new pops up after you press F5)
