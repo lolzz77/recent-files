@@ -18,6 +18,15 @@ export class RecentFilesProvider extends vscode.Disposable implements vscode.Tre
   constructor(private readonly context: vscode.ExtensionContext) {
     super(() => this.dispose());
 
+    // fail safe check
+    // if not array, set it to array.
+    // Because, when you `this.context.workspaceState.update('recentFiles', 'Hello Word');`
+    // that is, update the tree into something that is not array,
+    // the extension will fail the rest of the code
+    let check_is_array = context.workspaceState.get('recentFiles', []);
+    if(!Array.isArray(check_is_array))
+      this.context.workspaceState.update('recentFiles', []);
+
     // get the explorer id specified in /workspace/recent-files/package.json
     this.model = context.workspaceState.get('recentFiles', [])
       .map((serialized: ISerializedFile) => RecentFile.fromJSON(serialized));
@@ -62,6 +71,7 @@ export class RecentFilesProvider extends vscode.Disposable implements vscode.Tre
   }
 
   // udpate array to the explorer id specified in /workspace/recent-files/package.json
+  // this only takes effect after you reload the window twice (the new pops up after you press F5)
 	this.context.workspaceState.update('recentFiles', this.model.map((file) => file.toJSON()));
   }
 
