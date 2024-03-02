@@ -18,6 +18,7 @@ export class RecentFilesProvider extends vscode.Disposable implements vscode.Tre
   constructor(private readonly context: vscode.ExtensionContext) {
     super(() => this.dispose());
 
+    // get the explorer id specified in /workspace/recent-files/package.json
     this.model = context.workspaceState.get('recentFiles', [])
       .map((serialized: ISerializedFile) => RecentFile.fromJSON(serialized));
 
@@ -36,8 +37,12 @@ export class RecentFilesProvider extends vscode.Disposable implements vscode.Tre
   private addFile(document: vscode.TextDocument) {
 	// If the file does not exists in the array
     if (this.model.find((file) => file.uri.path === document.uri.path) === undefined) {
-		// then add to the beginning of array
-      this.model.splice(0, 0, new RecentFile(document.uri, path.basename(document.fileName)));
+		  // then add to the beginning of array
+      let uri = document.uri;
+      let fileName = path.basename(document.fileName);
+      let filePath = uri.toString().substring(("file://").length);
+      fileName = fileName + '\t' + '(' + filePath + ')'
+      this.model.splice(0, 0, new RecentFile(uri, fileName));
     }
 	// else, remove the existing fiel from its index, then add it back to the latest index of array
 	else {
@@ -49,13 +54,14 @@ export class RecentFilesProvider extends vscode.Disposable implements vscode.Tre
 			this.model.splice(0, 0, removedFile);
 		}
 	}
-  
+
   // if exceed maximum size, delete the last element from array
   if(this.model.length > 20)
   {
     this.model.pop();
   }
 
+  // udpate array to the explorer id specified in /workspace/recent-files/package.json
 	this.context.workspaceState.update('recentFiles', this.model.map((file) => file.toJSON()));
   }
 
@@ -86,6 +92,7 @@ class RecentFile extends vscode.TreeItem {
     super(fileName);
 
     this.resourceUri = uri;
+    // this one activates vscode to open the file in new tab
     this.command = {
       command: 'vscode.open',
       title: 'Open',
