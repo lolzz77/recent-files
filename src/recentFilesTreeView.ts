@@ -49,6 +49,13 @@ export class RecentFilesProvider extends vscode.Disposable implements vscode.Tre
 			this.model.splice(0, 0, removedFile);
 		}
 	}
+  
+  // if exceed maximum size, delete the last element from array
+  if(this.model.length > 20)
+  {
+    this.model.pop();
+  }
+
 	this.context.workspaceState.update('recentFiles', this.model.map((file) => file.toJSON()));
   }
 
