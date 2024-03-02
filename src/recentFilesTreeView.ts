@@ -34,10 +34,22 @@ export class RecentFilesProvider extends vscode.Disposable implements vscode.Tre
   }
 
   private addFile(document: vscode.TextDocument) {
+	// If the file does not exists in the array
     if (this.model.find((file) => file.uri.path === document.uri.path) === undefined) {
+		// then add to the beginning of array
       this.model.splice(0, 0, new RecentFile(document.uri, path.basename(document.fileName)));
-      this.context.workspaceState.update('recentFiles', this.model.map((file) => file.toJSON()));
     }
+	// else, remove the existing fiel from its index, then add it back to the latest index of array
+	else {
+		const matchingIndex = this.model.findIndex((file) => file.uri.path === document.uri.path);
+		// If matching file found, remove it from the model
+		if (matchingIndex !== -1) {
+			const removedFile = this.model.splice(matchingIndex, 1)[0];
+			// Add the removed file as a new entry at the beginning of the model
+			this.model.splice(0, 0, removedFile);
+		}
+	}
+	this.context.workspaceState.update('recentFiles', this.model.map((file) => file.toJSON()));
   }
 
   getTreeItem(element: RecentFile): vscode.TreeItem | Thenable<vscode.TreeItem> {
