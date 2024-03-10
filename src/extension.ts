@@ -1,15 +1,15 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { RecentFilesProvider } from './recentFilesTreeView';
+import { recentlyOpenedProvider } from './recentlyOpenedTreeView';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-	const treeDataProvider = new RecentFilesProvider(context);
+	const treeDataProvider = new recentlyOpenedProvider(context);
 	let registeredProvider = vscode.window.registerTreeDataProvider(
-		'recentFiles',
+		'recentlyOpened',
 		treeDataProvider
 	);
 

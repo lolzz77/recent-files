@@ -15,15 +15,15 @@
     "Other"
   ],
   "activationEvents": [
-    "onView:recentFiles"
+    "onView:recentlyOpened"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "views": {
       "explorer": [
         {
-          "id": "recentFiles",
-          "name": "Recent Files"
+          "id": "recentlyOpened",
+          "name": "Recently Opened"
         }
       ]
     }

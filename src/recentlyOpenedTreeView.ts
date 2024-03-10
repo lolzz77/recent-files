@@ -6,13 +6,13 @@ interface ISerializedFile {
   fileName: string;
 }
 
-export class RecentFilesProvider extends vscode.Disposable implements vscode.TreeDataProvider<RecentFile> {
-  private model: RecentFile[] = [];
+export class recentlyOpenedProvider extends vscode.Disposable implements vscode.TreeDataProvider<RecentlyOpened> {
+  private model: RecentlyOpened[] = [];
   private disposables: vscode.Disposable[] = [];
 
-  private _onDidChangeTreeData: vscode.EventEmitter<void | RecentFile | RecentFile[] | null | undefined> =
-    new vscode.EventEmitter<void | RecentFile | RecentFile[] | null | undefined>();
-  onDidChangeTreeData?: vscode.Event<void | RecentFile | RecentFile[] | null | undefined> | undefined =
+  private _onDidChangeTreeData: vscode.EventEmitter<void | RecentlyOpened | RecentlyOpened[] | null | undefined> =
+    new vscode.EventEmitter<void | RecentlyOpened | RecentlyOpened[] | null | undefined>();
+  onDidChangeTreeData?: vscode.Event<void | RecentlyOpened | RecentlyOpened[] | null | undefined> | undefined =
     this._onDidChangeTreeData.event;
 
   constructor(private readonly context: vscode.ExtensionContext) {
@@ -20,16 +20,16 @@ export class RecentFilesProvider extends vscode.Disposable implements vscode.Tre
 
     // fail safe check
     // if not array, set it to array.
-    // Because, when you `this.context.workspaceState.update('recentFiles', 'Hello Word');`
+    // Because, when you `this.context.workspaceState.update('recentlyOpened', 'Hello Word');`
     // that is, update the tree into something that is not array,
     // the extension will fail the rest of the code
-    let check_is_array = context.workspaceState.get('recentFiles', []);
+    let check_is_array = context.workspaceState.get('recentlyOpened', []);
     if(!Array.isArray(check_is_array))
-      this.context.workspaceState.update('recentFiles', []);
+      this.context.workspaceState.update('recentlyOpened', []);
 
     // get the explorer id specified in /workspace/recent-files/package.json
-    this.model = context.workspaceState.get('recentFiles', [])
-      .map((serialized: ISerializedFile) => RecentFile.fromJSON(serialized));
+    this.model = context.workspaceState.get('recentlyOpened', [])
+      .map((serialized: ISerializedFile) => RecentlyOpened.fromJSON(serialized));
 
     vscode.workspace.textDocuments.forEach((document) => {
       this.addFile(document);
@@ -51,7 +51,7 @@ export class RecentFilesProvider extends vscode.Disposable implements vscode.Tre
       let fileName = path.basename(document.fileName);
       let filePath = uri.toString().substring(("file://").length);
       fileName = fileName + '\t' + '(' + filePath + ')'
-      this.model.splice(0, 0, new RecentFile(uri, fileName));
+      this.model.splice(0, 0, new RecentlyOpened(uri, fileName));
     }
 	// else, remove the existing fiel from its index, then add it back to the latest index of array
 	else {
@@ -70,15 +70,15 @@ export class RecentFilesProvider extends vscode.Disposable implements vscode.Tre
 
   // udpate array to the explorer id specified in /workspace/recent-files/package.json
   // this only takes effect after you reload the window twice (the new pops up after you press F5)
-	this.context.workspaceState.update('recentFiles', this.model.map((file) => file.toJSON()));
+	this.context.workspaceState.update('recentlyOpened', this.model.map((file) => file.toJSON()));
   }
 
-  getTreeItem(element: RecentFile): vscode.TreeItem | Thenable<vscode.TreeItem> {
+  getTreeItem(element: RecentlyOpened): vscode.TreeItem | Thenable<vscode.TreeItem> {
     return element;
   }
 
-  getChildren(element?: RecentFile | undefined): vscode.ProviderResult<RecentFile[]> {
-    if (element instanceof RecentFile) {
+  getChildren(element?: RecentlyOpened | undefined): vscode.ProviderResult<RecentlyOpened[]> {
+    if (element instanceof RecentlyOpened) {
       return [];
     }
 
@@ -92,7 +92,7 @@ export class RecentFilesProvider extends vscode.Disposable implements vscode.Tre
 }
 
 
-class RecentFile extends vscode.TreeItem {
+class RecentlyOpened extends vscode.TreeItem {
   constructor(
     public readonly uri: vscode.Uri,
     public readonly fileName: string
@@ -115,7 +115,7 @@ class RecentFile extends vscode.TreeItem {
     };
   }
 
-  static fromJSON(serialized: ISerializedFile): RecentFile {
-    return new RecentFile(vscode.Uri.parse(serialized.serializedUri), serialized.fileName);
+  static fromJSON(serialized: ISerializedFile): RecentlyOpened {
+    return new RecentlyOpened(vscode.Uri.parse(serialized.serializedUri), serialized.fileName);
   }
 }
