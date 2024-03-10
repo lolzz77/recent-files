@@ -34,10 +34,6 @@ export class recentlyOpenedProvider extends vscode.Disposable implements vscode.
             .get('recentlyOpened', [])
             .map((serialized: ISerializedFile) => RecentlyOpened.fromJSON(serialized));
 
-        vscode.workspace.textDocuments.forEach((document) => {
-            this.addFile(document);
-        });
-
         this.disposables.push(vscode.window.onDidChangeActiveTextEditor((editor) => {
             if (!editor)
                 return
