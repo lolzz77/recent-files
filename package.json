@@ -26,6 +26,25 @@
           "name": "Recently Opened"
         }
       ]
+    },
+    "commands": [
+      {
+        "command": "recentlyOpened.deleteElement",
+        "title": "Delete",
+        "icon": {
+          "light": "resources/delete-light-mode.svg",
+          "dark": "resources/delete-dark-mode.svg"
+        }
+      }
+    ],
+    "menus": {
+      "view/item/context": [
+        {
+          "command": "recentlyOpened.deleteElement",
+          "when": "view == recentlyOpened",
+          "group": "inline"
+        }
+      ]
     }
   },
   "scripts": {
