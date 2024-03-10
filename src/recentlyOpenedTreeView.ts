@@ -53,7 +53,7 @@ export class recentlyOpenedProvider extends vscode.Disposable implements vscode.
         {
             // then add to the beginning of array
             let uri = document.uri;
-            let fileName = path.basename(document.fileName);
+            let fileName = path.basename(document.fileName).trim();
             let filePath = uri.toString().substring(("file://").length);
             fileName = fileName + '\t' + '(' + filePath + ')'
             this.model.splice(0, 0, new RecentlyOpened(uri, fileName));
