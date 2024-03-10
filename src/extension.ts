@@ -15,6 +15,24 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(registeredProvider);
 	context.subscriptions.push(treeDataProvider);
+
+    const command = 'recentlyOpened.deleteElement';
+	// im not sure how this works but
+	// this code is `commandHandler = nameless_function`
+	// then thte nameless function can accept parameter
+	// whatever parameter you put, for example
+	// - file:string
+	// - index:number
+	// - recentlyOpenedProvider: recentlyOpenedProvider
+	// they all will have the same value
+	// I believe these values are passed in by `vscode.commands.registerCommand` function
+    const commandHandler = (treeItem: any) => {
+		treeDataProvider.deleteFile(treeItem);
+    };
+
+    // Register the command
+    context.subscriptions.push(vscode.commands.registerCommand(command, commandHandler));
+
 }
 
 // This method is called when your extension is deactivated

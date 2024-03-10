@@ -71,7 +71,17 @@ export class recentlyOpenedProvider extends vscode.Disposable implements vscode.
   // udpate array to the explorer id specified in /workspace/recent-files/package.json
   // this only takes effect after you reload the window twice (the new pops up after you press F5)
 	this.context.workspaceState.update('recentlyOpened', this.model.map((file) => file.toJSON()));
-  }
+}
+
+    public deleteFile(treeItem: any) {
+        // find the file in the array, get its index
+        const matchingIndex = this.model.findIndex((file) => file.uri.path === treeItem.uri.path);
+        // Remove the file from array from its index
+        this.model.splice(matchingIndex, 1);
+        // update the tree view
+        this._onDidChangeTreeData.fire(undefined);
+    	this.context.workspaceState.update('recentlyOpened', this.model.map((file) => file.toJSON()));
+    }
 
   getTreeItem(element: RecentlyOpened): vscode.TreeItem | Thenable<vscode.TreeItem> {
     return element;
