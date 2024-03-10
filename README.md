@@ -1,17 +1,6 @@
-# Recent Files README
+# Forked from
+https://github.com/sbatten/recent-files
 
-A small extension to work as vertical tabs for most recently used files.
+Opened PR to enhance the original repo.
 
-## Features
-
-For a given workspace, see the most recently used files in a list view. There is no organisation to the list like which 
-editor group it belongs to as this is not important to my workflow.
-
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 0.1.0
-
-Initial release of recent files.
+But it seems no attention is paid at the moment.
